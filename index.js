@@ -4,10 +4,10 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const port = process.env.PORT || 5000;
 
+// const jwt = require('jsonwebtoken');
 // const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 
 // middleware
@@ -31,6 +31,28 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const usersCollection = client.db("summerCamp").collection("users");
+
+    // users data
+    // app.get('/users', async (req, res) => {
+    //     const result = await usersCollection.find().toArray();
+    //     res.send(result);
+    //   });
+  
+      app.post('/users', async (req, res) => {
+        const user = req.body;
+        const query = { email: user.email }
+        const existingUser = await usersCollection.findOne(query);
+  
+        if (existingUser) {
+          return res.send({ message: 'user email already exists' })
+        }
+  
+        const result = await usersCollection.insertOne(user);
+        res.send(result);
+      });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -40,3 +62,12 @@ async function run() {
   }
 }
 run().catch(console.dir);
+
+
+app.get('/', (req, res) => {
+    res.send('music running')
+  })
+  
+  app.listen(port, () => {
+    console.log(`Music instruments running ${port}`);
+  })
