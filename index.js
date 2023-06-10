@@ -46,6 +46,7 @@ async function run() {
         await client.connect();
 
         const usersCollection = client.db("summerCamp").collection("users");
+        const classesCollection = client.db("summerCamp").collection("classes");
 
         app.post('/jwt', (req, res) => {
             const user = req.body;
@@ -59,10 +60,23 @@ async function run() {
             const query = { email: email }
             const user = await usersCollection.findOne(query);
             if (user?.role !== 'admin') {
-              return res.status(403).send({ error: true, message: 'forbidden message' });
+                return res.status(403).send({ error: true, message: 'forbidden message' });
             }
             next();
-          }
+        }
+
+        //add classes api
+        app.get('/classes', async (req, res) => {
+            const result = await classesCollection.find().toArray();
+            res.send(result)
+
+        })
+        app.post('/classes', async (req, res) => {
+            const addClass = req.body;
+            // console.log(addClass);
+            const result = await classesCollection.insertOne(addClass);
+            res.send(result);
+          });
 
         // users data
         app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
