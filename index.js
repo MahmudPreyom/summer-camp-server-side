@@ -47,12 +47,12 @@ async function run() {
 
         const usersCollection = client.db("summerCamp").collection("users");
 
-        // app.post('/jwt', (req, res) => {
-        //     const user = req.body;
-        //     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+        app.post('/jwt', (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
 
-        //     res.send({ token })
-        // })
+            res.send({ token })
+        })
 
         // const verifyAdmin = async (req, res, next) => {
         //     const email = req.decoded.email;
