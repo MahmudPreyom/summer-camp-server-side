@@ -84,17 +84,17 @@ async function run() {
         });
 
         //   admin user check
-        // app.get('/users/admin/:email', verifyJWT, async (req, res) => {
-        //     const email = req.params.email;
+        app.get('/users/admin/:email', verifyJWT, async (req, res) => {
+            const email = req.params.email;
 
-        //     if (req.decoded.email !== email) {
-        //         res.send({ admin: false })
-        //     }
-        //     const query = { email: email }
-        //     const user = await usersCollection.findOne(query);
-        //     const result = { admin: user?.role === 'admin' }
-        //     res.send(result);
-        // })
+            if (req.decoded.email !== email) {
+                res.send({ admin: false })
+            }
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            const result = { admin: user?.role === 'admin' }
+            res.send(result);
+        })
 
         // app.patch('/users/admin/:id', async (req, res) => {
         //     const id = req.params.id;
