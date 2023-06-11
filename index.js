@@ -47,6 +47,7 @@ async function run() {
 
         const usersCollection = client.db("summerCamp").collection("users");
         const classesCollection = client.db("summerCamp").collection("classes");
+        const addClassesCart = client.db("summerCamp").collection("myclasscart");
 
         app.post('/jwt', (req, res) => {
             const user = req.body;
@@ -170,6 +171,32 @@ async function run() {
             const result = await usersCollection.updateOne(filter, updateDoc);
             res.send(result)
         })
+
+        // my class cart
+        app.patch('/myclasscart/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const myClasses = req.body;
+            const options = { upsert: true }
+            const updateDoc = {
+              $set: {
+                availableSeats: myClasses.availableSeats
+              }
+            }
+            const result = await classesCollection.updateOne(filter, updateDoc, options)
+            res.send(result)
+          
+          })
+          app.post('/myclasscart', async(req, res)=> {
+            const myclassAdded = req.body;
+          
+            // console.log(addClass);
+            const result = await addClassesCart.insertOne(myclassAdded);
+            res.send(result);
+            if(req.status == 200){
+              console.log('added');
+            }
+          })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
