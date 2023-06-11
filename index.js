@@ -78,25 +78,7 @@ async function run() {
             res.send(result);
           });
 
-          // Define a route to handle the update request
-// app.put('/classes/:id/approve', (req, res) => {
-//     const classId = req.params.id;
-  
-    // Update the class status to "approved" in your backend storage or database
-    // Example code to update data in a MongoDB collection:
-    // Assuming you have a `Classes` collection in your MongoDB
-    // You'll need to replace this with your actual database logic
-//     Classes.findByIdAndUpdate(classId, { status: 'approved' }, { new: true })
-//       .then((updatedClass) => {
-//         // Return the updated class data as the response
-//         res.json(updatedClass);
-//       })
-//       .catch((error) => {
-//         // Handle errors
-//         console.log(error);
-//         res.status(500).json({ error: 'Failed to update class status' });
-//       });
-//   });
+         
 
         // users data
         app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
@@ -143,8 +125,20 @@ async function run() {
             res.send(result);
         })
 
-        //   instructor check
+        // class approved
+        app.patch('/classes/:id', (req, res) => {
+            classesCollection.updateOne({_id: new ObjectId(req.params.id) },
+              {
+                  $set: { status: req.body.status}
+              })
+              .then(result => {
+                  res.send(result.modifiedCount > 0)
+                  console.log(result);
+              })
+        })
+        
 
+        //   instructor check
         app.get('/users/instructor/:email', verifyJWT, async (req, res) => {
             const email = req.params.email;
             if (req.decoded.email !== email) {
