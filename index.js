@@ -125,6 +125,14 @@ async function run() {
             res.send(result);
         })
 
+        // users deleted
+        app.delete('/users/:id', verifyJWT, verifyAdmin, async (req, res) => {
+              const id = req.params.id;
+              const query = { _id: new ObjectId(id) };
+              const result = await usersCollection.deleteOne(query);
+              res.send(result);
+            })
+
         // class approved
         app.patch('/classes/:id', (req, res) => {
             classesCollection.updateOne({_id: new ObjectId(req.params.id) },
