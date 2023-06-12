@@ -67,7 +67,7 @@ async function run() {
         }
 
         //add classes api
-        app.get('/classes', async (req, res) => {
+        app.get('/classes', verifyJWT, async (req, res) => {
             const result = await classesCollection.find().toArray();
             res.send(result)
 
@@ -211,6 +211,13 @@ async function run() {
             const result = await addClassesCart.find(query).toArray();
             res.send(result);
           });
+
+          app.delete('/myclasscart/:id', verifyJWT, async(req,res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await addClassesCart.deleteOne(query);
+            res.send(result);
+          })
 
         // Send a ping to confirm a successful connection
         // await client.db("admin").command({ ping: 1 });
