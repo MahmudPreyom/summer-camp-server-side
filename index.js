@@ -43,7 +43,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const usersCollection = client.db("summerCamp").collection("users");
         const classesCollection = client.db("summerCamp").collection("classes");
@@ -197,9 +197,23 @@ async function run() {
               console.log('added');
             }
           })
+          app.get('/myclasscart',verifyJWT, async (req, res) => {
+            const email = req.query.email;
+            if (!email) {
+              res.send([]);
+            }
+            const decodedEmail = req.decoded.email;
+            if (email !== decodedEmail) {
+              return res.status(403).send({ error: true, message: 'forbidden access' })
+            }
+            const query = { email: email }; 
+      
+            const result = await addClassesCart.find(query).toArray();
+            res.send(result);
+          });
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
