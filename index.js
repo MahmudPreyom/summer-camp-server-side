@@ -67,7 +67,7 @@ async function run() {
         }
 
         //add classes api
-        app.get('/classes', verifyJWT, async (req, res) => {
+        app.get('/classes', async (req, res) => {
             const result = await classesCollection.find().toArray();
             res.send(result)
 
